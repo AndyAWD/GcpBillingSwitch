@@ -1,19 +1,19 @@
 # GCP Billing Switch (GcpBillingSwitch)
 
 這是一個用於自動偵測與切換 Google Cloud Platform (GCP) 專案帳單帳戶的 Node.js 工具。
-特別針對使用 `gemini` CLI 時可能遇到的額度耗盡 (Quota exceeded) 或需要付費 (402 Payment Required) 錯誤，提供自動化的備用帳戶切換機制。
+特別針對使用 `Gemini` CLI 時可能遇到的額度耗盡 (Quota exceeded) 或需要付費 (402 Payment Required) 錯誤，提供自動化的備用帳戶切換機制。
 
 ## 功能特色
 * **自動化環境檢查**：自動確認 `gcloud` CLI 是否已安裝並完成登入。
 * **動態專案偵測**：自動抓取目前 `gcloud` 活躍的專案 ID。
-* **智慧化額度測試**：透過呼叫 `gemini` CLI 指令測試目前帳單狀態，若額度充足則保持不變。
+* **智慧化額度測試**：透過呼叫 `Gemini` CLI 指令測試目前帳單狀態，若額度充足則保持不變。
 * **無縫切換備用帳戶**：當偵測到額度耗盡時，會自動列出名下所有可用的 GCP 帳單帳戶，並嘗試將專案連結至新的有效帳戶。
 * **狀態記憶**：將已經耗盡額度的帳戶自動記錄在 `~/.gemini/used_accounts.txt` 中，避免重複嘗試無效的帳戶。
 
 ## 系統需求
 * [Node.js](https://nodejs.org/)
 * [Google Cloud CLI (gcloud)](https://cloud.google.com/sdk/docs/install)
-* 已安裝並設定好的 `gemini` CLI
+* 已安裝並設定好的 `Gemini` CLI
 
 ## 使用方式
 
