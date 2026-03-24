@@ -38,3 +38,44 @@
 3. 若捕捉到包含 `402`、`Billing disabled` 或 `Quota exceeded` 的錯誤，腳本會認定該帳戶額度耗盡，並寫入黑名單（耗盡名單）。
 4. 自動掃描 `gcloud billing accounts list`，尋找尚未耗盡的帳單帳戶。
 5. 呼叫 `gcloud billing projects link` 動態將專案切換至新帳戶，等待 15 秒同步後重新測試，直到服務恢復為止。
+
+## 整合至 Gemini CLI Hooks (進階用法)
+
+您可以將此腳本註冊為 Gemini CLI 的 `SessionStart` Hook。這樣一來，每次啟動 Gemini CLI 對話時，系統都會在背景自動執行此腳本，確保 GCP 帳單額度充足，不會中斷您的對話。
+
+### 設定步驟
+
+1. **建立存放目錄**
+   在您的全域 Gemini 設定資料夾中建立 `hooks` 目錄（若尚未建立）：
+   ```bash
+   mkdir -p ~/.gemini/hooks
+   ```
+
+2. **複製腳本**
+   將專案中的 `check-billing.mjs` 複製到該目錄：
+   ```bash
+   cp check-billing.mjs ~/.gemini/hooks/check-billing.mjs
+   ```
+
+3. **修改全域設定檔**
+   開啟全域設定檔 `~/.gemini/settings.json`（若無此檔案請自行建立），加入 `SessionStart` hook 的設定。這樣設定會套用到所有的專案目錄：
+
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [
+         {
+           "matcher": ".*",
+           "hooks": [
+             {
+               "name": "gcp-billing-switch",
+               "type": "command",
+               "command": "node ~/.gemini/hooks/check-billing.mjs",
+               "description": "自動檢查並切換 GCP 帳單帳戶，確保 API 額度充足"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
